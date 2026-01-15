@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-// import { FizzBuzzLogo } from '@/components/FizzBuzzLogo'
 import { Terminal, ArrowRight, Zap, Coffee } from 'lucide-react'
+import Link from 'next/link'
 import clsx from 'clsx'
-
+import Image from 'next/image'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 export default function Home() {
   const [mode, setMode] = useState<'fizz' | 'buzz'>('fizz')
   const [email, setEmail] = useState('')
@@ -160,7 +159,11 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <form onSubmit={handleCreate} className="relative group">
+          <form
+            action="https://formspree.io/f/mykkzopa"
+            method="POST"
+            className="relative group"
+          >
             <div
               className={`absolute -inset-0.5 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 ${
                 mode === 'fizz' ? 'bg-red-600' : 'bg-blue-600'
@@ -168,24 +171,24 @@ export default function Home() {
             ></div>
             <div className="relative flex items-center bg-black rounded-lg border border-neutral-800 p-2">
               <Terminal className="w-5 h-5 ml-3 text-neutral-500" />
+              <input type="hidden" name="_next" value="/thank-you" />
               <input
                 type="email"
+                name="email"
                 placeholder="enter email_address..."
                 className="w-full bg-transparent border-none focus:ring-0 text-neutral-200 placeholder-neutral-600 ml-3 font-mono"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <button
                 type="submit"
-                disabled={submitted}
                 className={`${buttonBg} text-white px-4 py-2 rounded-md font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {submitted ? 'SAVED' : <ArrowRight className="w-4 h-4" />}
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </form>
           <div className="mt-4 flex justify-between text-xs text-neutral-600 font-mono">
+            <Link href="/about">About</Link>
             <span>[system status: online]</span>
             <span>v1.0.4-beta</span>
           </div>
