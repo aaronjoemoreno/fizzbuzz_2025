@@ -6,7 +6,7 @@ export default function ThankYou() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-black">
       <div className="space-y-4 text-center">
         <Image
-          src="/fizzbuzz.GIF"
+          src="/fizzbuzz-animate.gif"
           alt="FizzBuzz GIF"
           width={200}
           height={200}
