@@ -6,8 +6,13 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 export default function Home() {
   const [mode, setMode] = useState<'fizz' | 'buzz'>('fizz')
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const router = useRouter()
 
   // Theme colors based on mode
   const accentColor = mode === 'fizz' ? 'text-red-400' : 'text-blue-400'
@@ -17,6 +22,35 @@ export default function Home() {
     mode === 'fizz'
       ? 'bg-red-500 hover:bg-red-600'
       : 'bg-blue-500 hover:bg-blue-600'
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSubmitted(true)
+
+    const formData = new FormData(e.currentTarget)
+    formData.append('access_key', 'ef074cb2-5b9d-4ba8-bcde-fd58b3576168')
+
+    const object = Object.fromEntries(formData.entries())
+    const json = JSON.stringify(object)
+
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: json,
+    })
+
+    const data = await response.json()
+
+    if (data.success) {
+      router.push('/thank-you')
+    } else {
+      console.error('Web3Forms error:', data.message || data)
+      setSubmitted(false)
+    }
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden transition-colors duration-700">
@@ -148,17 +182,12 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <form
-            action="https://api.web3forms.com/submit"
-            method="POST"
-            className="relative group"
-          >
+          <form onSubmit={handleSubmit} className="relative group">
             <input
               type="hidden"
               name="access_key"
               value="ef074cb2-5b9d-4ba8-bcde-fd58b3576168"
             />
-            <input type="hidden" name="redirect" value="/thank-you" />
 
             <div
               className={`absolute -inset-0.5 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 ${
@@ -172,13 +201,16 @@ export default function Home() {
                 name="email"
                 placeholder="enter email_address..."
                 className="w-full bg-transparent border-none focus:ring-0 text-neutral-200 placeholder-neutral-600 ml-3 font-mono"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <button
                 type="submit"
+                disabled={submitted}
                 className={`${buttonBg} text-white px-4 py-2 rounded-md font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                <ArrowRight className="w-4 h-4" />
+                {submitted ? 'SAVED' : <ArrowRight className="w-4 h-4" />}
               </button>
             </div>
           </form>
