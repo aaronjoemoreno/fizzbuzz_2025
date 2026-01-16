@@ -8,8 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 export default function Home() {
   const [mode, setMode] = useState<'fizz' | 'buzz'>('fizz')
-  const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
 
   // Theme colors based on mode
   const accentColor = mode === 'fizz' ? 'text-red-400' : 'text-blue-400'
@@ -19,15 +17,6 @@ export default function Home() {
     mode === 'fizz'
       ? 'bg-red-500 hover:bg-red-600'
       : 'bg-blue-500 hover:bg-blue-600'
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => {
-      setEmail('')
-      setSubmitted(false)
-    }, 3000)
-  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden transition-colors duration-700">
@@ -160,10 +149,17 @@ export default function Home() {
           transition={{ delay: 0.4 }}
         >
           <form
-            action="https://formspree.io/f/mykkzopa"
+            action="https://api.web3forms.com/submit"
             method="POST"
             className="relative group"
           >
+            <input
+              type="hidden"
+              name="access_key"
+              value="ef074cb2-5b9d-4ba8-bcde-fd58b3576168"
+            />
+            <input type="hidden" name="redirect" value="/thank-you" />
+
             <div
               className={`absolute -inset-0.5 rounded-lg blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 ${
                 mode === 'fizz' ? 'bg-red-600' : 'bg-blue-600'
@@ -171,7 +167,6 @@ export default function Home() {
             ></div>
             <div className="relative flex items-center bg-black rounded-lg border border-neutral-800 p-2">
               <Terminal className="w-5 h-5 ml-3 text-neutral-500" />
-              <input type="hidden" name="_next" value="/thank-you" />
               <input
                 type="email"
                 name="email"
